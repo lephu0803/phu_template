@@ -6,9 +6,9 @@ def _parse_func(filename, label, size):
 
     image = tf.image.convert_image_dtype(image, dtype=tf.float32)
 
-    image = tf.image.resize_images(image, [64,64])
+    resized_images = tf.image.resize_images(image, [64,64])
 
-    return resized_image, label
+    return resized_images, label
 
 def train_preprocess(image, label):
 
@@ -31,7 +31,7 @@ def input_fn(is_traning, filenames, labels, params):
     assert len(filenames) == len(labels), "Filename and labels should have same length"
 
     parse_fn = lambda f, l: _parse_func(f, l, params.image)
-    train_fn = lambda f, l: train_preprocess(f, l, params.use_random_flip)
+    train_fn = lambda f, l: train_preprocess(f, l)
 
     if is_traning:
         dataset = (tf.data.Dataset.from_tensor_slices((tf.constant(filenames), tf.constant(labels)))
